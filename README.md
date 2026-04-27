@@ -18,21 +18,27 @@ Install locally if you want the `particle-analysis` command:
 python3 -m pip install -e .
 ```
 
-On Linux, install Fiji first:
+Install Fiji separately, then expose its launcher as `fiji` on your `PATH`.
+
+Linux example:
 
 ```bash
-mkdir -p ~/apps
-cd ~/apps
-curl -L -o fiji-linux64.zip https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
-unzip fiji-linux64.zip
-~/apps/Fiji.app/ImageJ-linux64 --headless --version
+ln -s /path/to/Fiji.app/ImageJ-linux64 ~/.local/bin/fiji
+fiji --headless --version
 ```
 
-If Fiji is not in one of the default search paths, pass it explicitly:
+macOS example:
+
+```bash
+ln -s /Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos-arm64 /usr/local/bin/fiji
+fiji --headless --version
+```
+
+If you do not want to add Fiji to `PATH`, pass it explicitly:
 
 ```bash
 python3 scripts/run_particle_analysis.py /path/to/images \
-  --fiji ~/apps/Fiji.app/ImageJ-linux64
+  --fiji /path/to/Fiji.app/ImageJ-linux64
 ```
 
 ```bash

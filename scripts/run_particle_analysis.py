@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Sequence
@@ -11,29 +12,13 @@ from typing import Sequence
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCRIPT = REPO_ROOT / "scripts" / "fiji_particle_analysis.py"
-DEFAULT_FIJI_CANDIDATES = (
-    Path("/Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos-arm64"),
-    Path("/Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos"),
-    Path("/Applications/Fiji.app/Contents/MacOS/fiji-macos-arm64"),
-    Path("/Applications/Fiji.app/Contents/MacOS/fiji-macos"),
-    Path("~/apps/Fiji.app/ImageJ-linux64"),
-    Path("~/Fiji.app/ImageJ-linux64"),
-    Path("/opt/Fiji.app/ImageJ-linux64"),
-    Path("/usr/local/Fiji.app/ImageJ-linux64"),
-    Path("~/apps/Fiji.app/fiji-linux64"),
-    Path("~/Fiji.app/fiji-linux64"),
-    Path("/opt/Fiji.app/fiji-linux64"),
-    Path("/usr/local/Fiji.app/fiji-linux64"),
-)
-LINUX_FIJI_INSTALL_HELP = """Linux Fiji install:
-  mkdir -p ~/apps
-  cd ~/apps
-  curl -L -o fiji-linux64.zip https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
-  unzip fiji-linux64.zip
-  ~/apps/Fiji.app/ImageJ-linux64 --headless --version
+FIJI_PATH_HELP = """Could not find Fiji.
 
-Then rerun with:
-  --fiji ~/apps/Fiji.app/ImageJ-linux64
+Install Fiji and expose its launcher as `fiji` on PATH, for example:
+  ln -s /path/to/Fiji.app/ImageJ-linux64 ~/.local/bin/fiji
+
+Or pass the launcher explicitly:
+  --fiji /path/to/Fiji.app/ImageJ-linux64
 """
 
 
@@ -82,7 +67,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--fiji",
         type=Path,
         default=None,
-        help="Path to Fiji executable. Defaults to /Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos-arm64.",
+        help="Path to Fiji executable. Defaults to `fiji` on PATH.",
     )
     parser.add_argument(
         "--script",
@@ -164,17 +149,11 @@ def discover_fiji(explicit_path: Path | None) -> Path:
             return path
         raise FileNotFoundError(f"Fiji executable does not exist: {path}")
 
-    for candidate in DEFAULT_FIJI_CANDIDATES:
-        path = candidate.expanduser()
-        if path.exists():
-            return path
+    fiji_on_path = shutil.which("fiji")
+    if fiji_on_path is not None:
+        return Path(fiji_on_path)
 
-    raise FileNotFoundError(
-        "Could not find Fiji. Pass --fiji /path/to/Fiji executable.\n\n"
-        "macOS example:\n"
-        "  --fiji /Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos-arm64\n\n"
-        f"{LINUX_FIJI_INSTALL_HELP}"
-    )
+    raise FileNotFoundError(FIJI_PATH_HELP)
 
 
 def discover_inputs(paths: Sequence[Path], limit: int | None) -> list[Path]:
