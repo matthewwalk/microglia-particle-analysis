@@ -82,11 +82,11 @@ microglia-particle-analysis mg1_iba1_rat301_0001.oir \
   --output-dir outputs/candidate-70
 ```
 
-Outputs are written to `outputs/<image-name>/`:
+Outputs are written to `outputs/<image-name>/`, with filenames prefixed by that folder name (the image stem):
 
-- `results.csv`: ImageJ particle table.
-- `outlines.tif`: particle outline image.
-- `binary_mask.tif`: thresholded binary image.
+- `<image-name>_results.csv`: ImageJ particle table.
+- `<image-name>_outlines.tif`: particle outline image.
+- `<image-name>_binary_mask.tif`: thresholded binary image.
 
 ## Batch Run
 
@@ -144,7 +144,7 @@ On the initial validation image, `Otsu dark` produced 89 particles.
 
 ## Tuning Guidance
 
-Tune `--threshold-*` and `--size` on representative images before running a full batch. Review both `binary_mask.tif` and `outlines.tif`; the mask confirms thresholding, while outlines confirm particle filtering.
+Tune `--threshold-*` and `--size` on representative images before running a full batch. Review both `*_binary_mask.tif` and `*_outlines.tif`; the mask confirms thresholding, while outlines confirm particle filtering.
 
 Closest tested match to the manual ~70-particle result for `mg1_iba1_rat301_0001.oir`:
 

@@ -26,9 +26,9 @@ make pre-commit
 
 If your change affects Fiji processing, run a small `.oir` smoke test and inspect:
 
-- `results.csv`
-- `binary_mask.tif`
-- `outlines.tif`
+- `<image-stem>_results.csv`
+- `<image-stem>_binary_mask.tif`
+- `<image-stem>_outlines.tif`
 
 Do not commit microscopy data, generated outputs, local environments, or cache files.
 
@@ -48,4 +48,4 @@ When reporting a bug, include:
 - Fiji version from `fiji --headless --version`.
 - Exact command run.
 - Error output or unexpected result.
-- Whether `binary_mask.tif` or `outlines.tif` looked incorrect.
+- Whether `*_binary_mask.tif` or `*_outlines.tif` looked incorrect.
