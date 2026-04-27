@@ -8,6 +8,19 @@ version = "0.1.0"
 description = "Batch Fiji/ImageJ microglia particle analysis for Olympus OIR microscopy images."
 readme = "README.md"
 requires-python = ">=3.10"
+license = { file = "LICENSE" }
+keywords = ["fiji", "imagej", "bio-formats", "microscopy", "microglia"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Image Processing",
+]
 dependencies = [
     "pillow>=10",
 ]
@@ -33,6 +46,9 @@ extend-exclude = [
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/fiji_particle_analysis.py" = ["F821"]
 
 [tool.basedpyright]
 include = ["scripts"]

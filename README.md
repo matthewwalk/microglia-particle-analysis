@@ -150,3 +150,13 @@ microglia-particle-analysis mg1_iba1_rat301_0001.oir \
   --size "20-600" \
   --output-dir outputs/candidate-70
 ```
+
+## Contributing
+
+Contributions are welcome. See `CONTRIBUTING.md` for local setup, validation checks, and pull request expectations.
+
+Please do not commit microscopy data or generated outputs. `.oir` files and `outputs/` are ignored by default.
+
+## Licence
+
+This project is licensed under the MIT License. See `LICENSE`.
