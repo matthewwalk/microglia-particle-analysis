@@ -96,8 +96,11 @@ microglia-particle-analysis /path/to/oir-folder \
   --threshold-min 30 \
   --threshold-max 255 \
   --size "20-600" \
+  --jobs 4 \
   --output-dir outputs
 ```
+
+`--jobs` controls how many Fiji processes run at once. Start with `--jobs 2` or `--jobs 4`; each worker launches an independent Fiji process and can use significant memory.
 
 For local development without installing the console command:
 
@@ -134,6 +137,7 @@ On the initial validation image, `Otsu dark` produced 89 particles.
 - `--circularity "0.00-1.00"`: particle circularity filter.
 - `--foreground light`: default; selected particles are white on black background.
 - `--foreground dark`: optional inverted mask; selected particles are black on white background.
+- `--jobs 1`: number of images to process in parallel. Default: `1`.
 - `--pixel-width-um 0.3107421875 --pixel-height-um 0.3107421875`: calibration override; defaults to `636.40 / 2048` microns per pixel.
 
 ## Tuning Guidance
