@@ -147,7 +147,7 @@ analyser = ParticleAnalyzer(
 )
 
 if not analyser.analyze(imp):
-    raise RuntimeError(f"Particle analysis failed: {input}")
+    raise RuntimeError("Particle analysis failed: " + str(input))
 
 results_table.save(results)
 outline_image = analyser.getOutputImage()
