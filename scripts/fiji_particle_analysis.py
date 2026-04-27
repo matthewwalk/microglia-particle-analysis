@@ -35,6 +35,23 @@ def parse_range(value):
     return lower, upper
 
 
+def pixel_area_um2(imp):
+    calibration = imp.getCalibration()
+    return calibration.pixelWidth * calibration.pixelHeight
+
+
+def to_pixel_area_range(imp, min_area_um2, max_area_um2):
+    area_per_pixel_um2 = pixel_area_um2(imp)
+    if area_per_pixel_um2 <= 0:
+        raise RuntimeError("Invalid image calibration: pixel area is <= 0")
+    min_area_pixels = min_area_um2 / area_per_pixel_um2
+    if max_area_um2 == float("inf"):
+        max_area_pixels = float("inf")
+    else:
+        max_area_pixels = max_area_um2 / area_per_pixel_um2
+    return min_area_pixels, max_area_pixels
+
+
 def project_stack(imp, method):
     if imp.getNSlices() <= 1:
         return imp
@@ -82,13 +99,13 @@ def make_binary_mask(imp, threshold_low, threshold_high, foreground_value):
     return mask_imp
 
 
-channel_index = int(channel)
+channel_index = int(channel) + 1
 threshold_min_value = threshold_min.strip()
 threshold_max_value = threshold_max.strip()
 pixel_width_um_value = pixel_width_um.strip()
 pixel_height_um_value = pixel_height_um.strip()
 foreground_value = 0 if foreground.strip().lower() == "dark" else 255
-min_size, max_size = parse_range(size)
+min_size_um2, max_size_um2 = parse_range(size)
 min_circularity, max_circularity = parse_range(circularity)
 
 IJ.run("Close All")
@@ -119,12 +136,13 @@ if foreground_value == 0:
 results_table = ResultsTable()
 measurements = Measurements.AREA | Measurements.MEAN | Measurements.MIN_MAX
 options = ParticleAnalyzer.SHOW_OUTLINES | ParticleAnalyzer.CLEAR_WORKSHEET
+min_size_pixels, max_size_pixels = to_pixel_area_range(imp, min_size_um2, max_size_um2)
 analyser = ParticleAnalyzer(
     options,
     measurements,
     results_table,
-    min_size,
-    max_size,
+    min_size_pixels,
+    max_size_pixels,
     min_circularity,
     max_circularity,
 )

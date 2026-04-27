@@ -35,6 +35,14 @@ def positive_int(value: str) -> int:
     return parsed
 
 
+def non_negative_int(value: str) -> int:
+    """Parse a non-negative integer argument."""
+    parsed = int(value)
+    if parsed < 0:
+        raise argparse.ArgumentTypeError("value must be >= 0")
+    return parsed
+
+
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments."""
     parser = argparse.ArgumentParser(
@@ -66,9 +74,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--channel",
-        type=positive_int,
+        type=non_negative_int,
         default=1,
-        help="Split channel number to analyse.",
+        help="Zero-based split channel number to analyse, matching Fiji/Bio-Formats windows.",
     )
     parser.add_argument(
         "--z-project",
@@ -96,7 +104,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--size",
         default="20-Infinity",
-        help='Particle size range, e.g. "20-120" in calibrated area units.',
+        help='Particle size range in microns^2, e.g. "20-600".',
     )
     parser.add_argument(
         "--circularity",
@@ -104,15 +112,21 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         help='Particle circularity range, e.g. "0.00-1.00".',
     )
     parser.add_argument(
+        "--foreground",
+        choices=("dark", "light"),
+        default="light",
+        help="Whether threshold-selected particles are dark or light in the mask.",
+    )
+    parser.add_argument(
         "--pixel-width-um",
         type=float,
-        default=None,
+        default=0.3107421875,
         help="Override pixel width in microns when Bio-Formats does not preserve calibration.",
     )
     parser.add_argument(
         "--pixel-height-um",
         type=float,
-        default=None,
+        default=0.3107421875,
         help="Override pixel height in microns when Bio-Formats does not preserve calibration.",
     )
     parser.add_argument(
@@ -179,6 +193,7 @@ def script_args(
         "threshold_max": "" if args.threshold_max is None else args.threshold_max,
         "size": args.size,
         "circularity": args.circularity,
+        "foreground": args.foreground,
         "pixel_width_um": "" if args.pixel_width_um is None else args.pixel_width_um,
         "pixel_height_um": "" if args.pixel_height_um is None else args.pixel_height_um,
     }

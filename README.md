@@ -13,7 +13,12 @@ Batch automation for the Fiji/ImageJ particle-analysis SOP:
 ## Smoke Test
 
 ```bash
-python3 scripts/run_particle_analysis.py mg1_iba1_rat301_0001.oir --limit 1 --size 20-Infinity
+python3 scripts/run_particle_analysis.py mg1_iba1_rat301_0001.oir \
+  --channel 1 \
+  --threshold-min 30 \
+  --threshold-max 255 \
+  --size "20-600" \
+  --limit 1
 ```
 
 Outputs land in `outputs/<image-name>/`:
@@ -30,12 +35,27 @@ python3 scripts/run_particle_analysis.py /path/to/oir-folder --output-dir output
 
 ## Key Parameters
 
-- `--channel 1`: channel to analyse after Bio-Formats split.
+- `--channel 1`: zero-based channel to analyse after Bio-Formats split, matching the GUI's channel 1.
 - `--z-project average|max|sum`: projection method for Z-stacks.
 - `--threshold-method "Default dark"`: Fiji auto-threshold method.
 - `--threshold-min 0 --threshold-max 18`: manual threshold range. Use both or neither.
-- `--size "20-120"`: particle size range in calibrated area units.
+- `--size "20-600"`: particle size range in microns^2. Script converts to pixel bounds internally.
 - `--circularity "0.00-1.00"`: particle circularity filter.
-- `--pixel-width-um 0.3107421875 --pixel-height-um 0.3107421875`: optional calibration override.
+- `--foreground light`: default; selected particles are white on black background.
+- `--foreground dark`: optional inverted mask; selected particles are black on white background.
+- `--pixel-width-um 0.3107421875 --pixel-height-um 0.3107421875`: calibration override; defaults to 636.40 microns / 2048 px.
 
 For production runs, tune `--threshold-*` and `--size` on a representative subset first, then process the full folder.
+
+For `mg1_iba1_rat301_0001.oir`, the closest tested match to the manual ~70-particle output was:
+
+```bash
+python3 scripts/run_particle_analysis.py mg1_iba1_rat301_0001.oir \
+  --channel 1 \
+  --threshold-min 30 \
+  --threshold-max 255 \
+  --size "20-600" \
+  --output-dir outputs/candidate-70
+```
+
+`--threshold-method "Otsu dark"` gave 89 particles on the same image.
