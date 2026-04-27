@@ -237,9 +237,10 @@ def run_one(
     image_output_dir = output_dir / image_path.stem
     image_output_dir.mkdir(parents=True, exist_ok=True)
 
-    results_path = image_output_dir / "results.csv"
-    outlines_path = image_output_dir / "outlines.tif"
-    binary_path = image_output_dir / "binary_mask.tif"
+    prefix = image_output_dir.name
+    results_path = image_output_dir / f"{prefix}_results.csv"
+    outlines_path = image_output_dir / f"{prefix}_outlines.tif"
+    binary_path = image_output_dir / f"{prefix}_binary_mask.tif"
     command = [
         str(fiji_path),
         "--allow-multiple",

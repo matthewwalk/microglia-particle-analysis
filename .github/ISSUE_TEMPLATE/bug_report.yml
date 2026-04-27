@@ -48,4 +48,4 @@ body:
     id: image-review
     attributes:
       label: Output image review
-      description: Did results.csv, binary_mask.tif, or outlines.tif look wrong?
+      description: Did *_results.csv, *_binary_mask.tif, or *_outlines.tif look wrong?
