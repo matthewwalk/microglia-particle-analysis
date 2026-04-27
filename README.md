@@ -12,6 +12,12 @@ Batch automation for the Fiji/ImageJ particle-analysis SOP:
 
 ## Smoke Test
 
+Install locally if you want the `particle-analysis` command:
+
+```bash
+python3 -m pip install -e .
+```
+
 ```bash
 python3 scripts/run_particle_analysis.py mg1_iba1_rat301_0001.oir \
   --channel 1 \

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "particle-analysis"
+version = "0.1.0"
+description = "Batch Fiji/ImageJ particle analysis for Olympus OIR microscopy images."
+readme = "README.md"
+requires-python = ">=3.10.16"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "basedpyright",
+    "ruff",
+]
+
+[project.scripts]
+particle-analysis = "scripts.run_particle_analysis:main"
+
+[tool.setuptools.packages.find]
+include = ["scripts*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [
+    "outputs",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.basedpyright]
+include = ["scripts"]
+exclude = ["outputs"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"

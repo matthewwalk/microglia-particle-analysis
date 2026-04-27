@@ -1,3 +1,19 @@
 .DS_Store
+
+# Microscopy inputs/outputs
 outputs/
 *.oir
+
+# Python caches/build artifacts
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.basedpyright/
+build/
+dist/
+
+# Local environments
+.venv/
+venv/
