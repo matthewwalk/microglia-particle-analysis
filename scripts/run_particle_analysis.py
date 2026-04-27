@@ -6,9 +6,9 @@ from __future__ import annotations
 import argparse
 import shutil
 import subprocess
+from collections.abc import Sequence
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
-from typing import Sequence
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCRIPT = REPO_ROOT / "scripts" / "fiji_particle_analysis.py"
@@ -49,7 +49,10 @@ def non_negative_int(value: str) -> int:
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments."""
     parser = argparse.ArgumentParser(
-        description="Run the Fiji/ImageJ microglia particle-analysis SOP over one or more .oir files.",
+        description=(
+            "Run the Fiji/ImageJ microglia particle-analysis SOP over "
+            "one or more .oir files."
+        ),
     )
     parser.add_argument(
         "inputs",
@@ -79,7 +82,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--channel",
         type=non_negative_int,
         default=1,
-        help="Zero-based split channel number to analyse, matching Fiji/Bio-Formats windows.",
+        help=(
+            "Zero-based split channel number to analyse, "
+            "matching Fiji/Bio-Formats windows."
+        ),
     )
     parser.add_argument(
         "--z-project",
@@ -90,7 +96,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--threshold-method",
         default="Default dark",
-        help='ImageJ auto-threshold method, used unless --threshold-min and --threshold-max are set.',
+        help=(
+            "ImageJ auto-threshold method, used unless "
+            "--threshold-min and --threshold-max are set."
+        ),
     )
     parser.add_argument(
         "--threshold-min",
@@ -118,25 +127,40 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--foreground",
         choices=("dark", "light"),
         default="light",
-        help="Whether threshold-selected particles are dark or light in the mask.",
+        help=(
+            "Whether threshold-selected particles are dark or light "
+            "in the mask."
+        ),
     )
     parser.add_argument(
         "--pixel-width-um",
         type=float,
         default=0.3107421875,
-        help="Override pixel width in microns when Bio-Formats does not preserve calibration.",
+        help=(
+            "Override pixel width in microns when Bio-Formats "
+            "does not preserve calibration."
+        ),
     )
     parser.add_argument(
         "--pixel-height-um",
         type=float,
         default=0.3107421875,
-        help="Override pixel height in microns when Bio-Formats does not preserve calibration.",
+        help=(
+            "Override pixel height in microns when Bio-Formats "
+            "does not preserve calibration."
+        ),
     )
     parser.add_argument(
         "--limit",
         type=positive_int,
         default=None,
         help="Only process first N files. Useful for smoke tests.",
+    )
+    parser.add_argument(
+        "--jobs",
+        type=positive_int,
+        default=1,
+        help="Number of images to process in parallel.",
     )
     return parser.parse_args(argv)
 
@@ -218,6 +242,7 @@ def run_one(
     binary_path = image_output_dir / "binary_mask.tif"
     command = [
         str(fiji_path),
+        "--allow-multiple",
         "--headless",
         "--run",
         str(script_path),
@@ -228,6 +253,41 @@ def run_one(
     if not results_path.exists() or results_path.stat().st_size == 0:
         raise RuntimeError(f"Fiji completed but did not write results: {results_path}")
     return results_path
+
+
+def run_all(
+    fiji_path: Path,
+    script_path: Path,
+    image_paths: Sequence[Path],
+    output_dir: Path,
+    args: argparse.Namespace,
+) -> list[Path]:
+    """Run Fiji particle analysis for all images."""
+    if args.jobs == 1:
+        results_paths = []
+        for index, image_path in enumerate(image_paths, start=1):
+            print(f"[{index}/{len(image_paths)}] {image_path.name}")
+            results_path = run_one(fiji_path, script_path, image_path, output_dir, args)
+            print(f"  results: {results_path}")
+            results_paths.append(results_path)
+        return results_paths
+
+    results_paths = []
+    with ThreadPoolExecutor(max_workers=args.jobs) as executor:
+        futures = {
+            executor.submit(run_one, fiji_path, script_path, image_path, output_dir, args): (
+                index,
+                image_path,
+            )
+            for index, image_path in enumerate(image_paths, start=1)
+        }
+        for future in as_completed(futures):
+            index, image_path = futures[future]
+            results_path = future.result()
+            print(f"[{index}/{len(image_paths)}] {image_path.name}")
+            print(f"  results: {results_path}")
+            results_paths.append(results_path)
+    return results_paths
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -244,11 +304,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"Fiji: {fiji_path}")
     print(f"Script: {args.script}")
     print(f"Images: {len(image_paths)}")
+    print(f"Jobs: {args.jobs}")
 
-    for index, image_path in enumerate(image_paths, start=1):
-        print(f"[{index}/{len(image_paths)}] {image_path.name}")
-        results_path = run_one(fiji_path, args.script, image_path, output_dir, args)
-        print(f"  results: {results_path}")
+    run_all(fiji_path, args.script, image_paths, output_dir, args)
 
     return 0
 

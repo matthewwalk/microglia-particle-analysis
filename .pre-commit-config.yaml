@@ -1,0 +1,25 @@
+repos:
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff
+        entry: python -m ruff check .
+        language: python
+        additional_dependencies: ["ruff"]
+        pass_filenames: false
+        types_or: [python, pyi]
+
+      - id: basedpyright
+        name: basedpyright
+        entry: python -m basedpyright
+        language: python
+        additional_dependencies: ["basedpyright"]
+        pass_filenames: false
+        types_or: [python, pyi]
+
+      - id: compile-python
+        name: compile python
+        entry: python -m py_compile scripts/run_particle_analysis.py scripts/__init__.py
+        language: python
+        pass_filenames: false
+        types_or: [python, pyi]
