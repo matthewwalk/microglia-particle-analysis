@@ -2,6 +2,8 @@
 
 Batch Fiji/ImageJ particle analysis for Olympus `.oir` microscopy images.
 
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/mattwalk)
+
 The workflow mirrors the manual SOP:
 
 1. Open `.oir` images with Bio-Formats.
