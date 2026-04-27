@@ -155,6 +155,12 @@ microglia-particle-analysis mg1_iba1_rat301_0001.oir \
 
 Contributions are welcome. See `CONTRIBUTING.md` for local setup, validation checks, and pull request expectations.
 
+Install pre-commit hooks after installing development dependencies:
+
+```bash
+make install-hooks
+```
+
 Please do not commit microscopy data or generated outputs. `.oir` files and `outputs/` are ignored by default.
 
 ## Licence

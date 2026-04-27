@@ -14,8 +14,7 @@
 #@ String foreground
 
 # pyright: reportMissingImports=false, reportUndefinedVariable=false
-from ij import IJ
-from ij import ImagePlus
+from ij import IJ, ImagePlus
 from ij.io import FileSaver
 from ij.measure import Measurements, ResultsTable
 from ij.plugin import ChannelSplitter, ZProjector
@@ -148,7 +147,7 @@ analyser = ParticleAnalyzer(
 )
 
 if not analyser.analyze(imp):
-    raise RuntimeError("Particle analysis failed: " + input)
+    raise RuntimeError(f"Particle analysis failed: {input}")
 
 results_table.save(results)
 outline_image = analyser.getOutputImage()

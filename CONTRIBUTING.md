@@ -10,14 +10,18 @@ Install Fiji first and make sure `fiji --headless --version` works. Then install
 python3 -m pip install -e ".[dev]"
 ```
 
-## Before Opening a Pull Request
-
-Run the local checks:
+Install the git hooks:
 
 ```bash
-python3 -m py_compile scripts/run_particle_analysis.py scripts/__init__.py
-ruff check .
-basedpyright
+make install-hooks
+```
+
+## Before Opening a Pull Request
+
+Run the pre-commit checks:
+
+```bash
+make pre-commit
 ```
 
 If your change affects Fiji processing, run a small `.oir` smoke test and inspect:

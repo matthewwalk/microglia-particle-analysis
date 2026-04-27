@@ -6,9 +6,8 @@ from __future__ import annotations
 import argparse
 import shutil
 import subprocess
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
-
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCRIPT = REPO_ROOT / "scripts" / "fiji_particle_analysis.py"
@@ -49,7 +48,10 @@ def non_negative_int(value: str) -> int:
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments."""
     parser = argparse.ArgumentParser(
-        description="Run the Fiji/ImageJ microglia particle-analysis SOP over one or more .oir files.",
+        description=(
+            "Run the Fiji/ImageJ microglia particle-analysis SOP over "
+            "one or more .oir files."
+        ),
     )
     parser.add_argument(
         "inputs",
@@ -79,7 +81,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--channel",
         type=non_negative_int,
         default=1,
-        help="Zero-based split channel number to analyse, matching Fiji/Bio-Formats windows.",
+        help=(
+            "Zero-based split channel number to analyse, "
+            "matching Fiji/Bio-Formats windows."
+        ),
     )
     parser.add_argument(
         "--z-project",
@@ -90,7 +95,10 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--threshold-method",
         default="Default dark",
-        help='ImageJ auto-threshold method, used unless --threshold-min and --threshold-max are set.',
+        help=(
+            "ImageJ auto-threshold method, used unless "
+            "--threshold-min and --threshold-max are set."
+        ),
     )
     parser.add_argument(
         "--threshold-min",
@@ -118,19 +126,28 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
         "--foreground",
         choices=("dark", "light"),
         default="light",
-        help="Whether threshold-selected particles are dark or light in the mask.",
+        help=(
+            "Whether threshold-selected particles are dark or light "
+            "in the mask."
+        ),
     )
     parser.add_argument(
         "--pixel-width-um",
         type=float,
         default=0.3107421875,
-        help="Override pixel width in microns when Bio-Formats does not preserve calibration.",
+        help=(
+            "Override pixel width in microns when Bio-Formats "
+            "does not preserve calibration."
+        ),
     )
     parser.add_argument(
         "--pixel-height-um",
         type=float,
         default=0.3107421875,
-        help="Override pixel height in microns when Bio-Formats does not preserve calibration.",
+        help=(
+            "Override pixel height in microns when Bio-Formats "
+            "does not preserve calibration."
+        ),
     )
     parser.add_argument(
         "--limit",
