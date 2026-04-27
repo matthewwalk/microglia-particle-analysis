@@ -59,6 +59,13 @@ microglia-particle-analysis /path/to/images \
   --fiji /path/to/Fiji.app/ImageJ-linux64
 ```
 
+Windows explicit launcher example:
+
+```powershell
+microglia-particle-analysis C:\path\to\images `
+  --fiji C:\path\to\Fiji.app\fiji-win64.exe
+```
+
 ## Quick Start
 
 Run one image with tuned settings from the initial validation image:
