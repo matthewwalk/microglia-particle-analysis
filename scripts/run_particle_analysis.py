@@ -16,7 +16,25 @@ DEFAULT_FIJI_CANDIDATES = (
     Path("/Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos"),
     Path("/Applications/Fiji.app/Contents/MacOS/fiji-macos-arm64"),
     Path("/Applications/Fiji.app/Contents/MacOS/fiji-macos"),
+    Path("~/apps/Fiji.app/ImageJ-linux64"),
+    Path("~/Fiji.app/ImageJ-linux64"),
+    Path("/opt/Fiji.app/ImageJ-linux64"),
+    Path("/usr/local/Fiji.app/ImageJ-linux64"),
+    Path("~/apps/Fiji.app/fiji-linux64"),
+    Path("~/Fiji.app/fiji-linux64"),
+    Path("/opt/Fiji.app/fiji-linux64"),
+    Path("/usr/local/Fiji.app/fiji-linux64"),
 )
+LINUX_FIJI_INSTALL_HELP = """Linux Fiji install:
+  mkdir -p ~/apps
+  cd ~/apps
+  curl -L -o fiji-linux64.zip https://downloads.imagej.net/fiji/latest/fiji-linux64.zip
+  unzip fiji-linux64.zip
+  ~/apps/Fiji.app/ImageJ-linux64 --headless --version
+
+Then rerun with:
+  --fiji ~/apps/Fiji.app/ImageJ-linux64
+"""
 
 
 def existing_path(value: str) -> Path:
@@ -147,11 +165,15 @@ def discover_fiji(explicit_path: Path | None) -> Path:
         raise FileNotFoundError(f"Fiji executable does not exist: {path}")
 
     for candidate in DEFAULT_FIJI_CANDIDATES:
-        if candidate.exists():
-            return candidate
+        path = candidate.expanduser()
+        if path.exists():
+            return path
 
     raise FileNotFoundError(
-        "Could not find Fiji. Pass --fiji /path/to/Fiji.app/Contents/MacOS/fiji-macos-arm64."
+        "Could not find Fiji. Pass --fiji /path/to/Fiji executable.\n\n"
+        "macOS example:\n"
+        "  --fiji /Applications/Fiji/Fiji.app/Contents/MacOS/fiji-macos-arm64\n\n"
+        f"{LINUX_FIJI_INSTALL_HELP}"
     )
 
 

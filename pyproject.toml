@@ -7,8 +7,10 @@ name = "particle-analysis"
 version = "0.1.0"
 description = "Batch Fiji/ImageJ particle analysis for Olympus OIR microscopy images."
 readme = "README.md"
-requires-python = ">=3.10.16"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = [
+    "pillow>=10",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -24,7 +26,7 @@ include = ["scripts*"]
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py310"
 extend-exclude = [
     "outputs",
 ]
@@ -35,5 +37,5 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 [tool.basedpyright]
 include = ["scripts"]
 exclude = ["outputs"]
-pythonVersion = "3.11"
+pythonVersion = "3.10"
 typeCheckingMode = "standard"
