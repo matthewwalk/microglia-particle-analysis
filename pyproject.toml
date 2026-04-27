@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "particle-analysis"
+name = "microglia-particle-analysis"
 version = "0.1.0"
-description = "Batch Fiji/ImageJ particle analysis for Olympus OIR microscopy images."
+description = "Batch Fiji/ImageJ microglia particle analysis for Olympus OIR microscopy images."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -19,7 +19,7 @@ dev = [
 ]
 
 [project.scripts]
-particle-analysis = "scripts.run_particle_analysis:main"
+microglia-particle-analysis = "scripts.run_particle_analysis:main"
 
 [tool.setuptools.packages.find]
 include = ["scripts*"]

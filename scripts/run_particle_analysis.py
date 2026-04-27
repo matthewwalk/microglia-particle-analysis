@@ -49,7 +49,7 @@ def non_negative_int(value: str) -> int:
 def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     """Parse CLI arguments."""
     parser = argparse.ArgumentParser(
-        description="Run the Fiji/ImageJ particle-analysis SOP over one or more .oir files.",
+        description="Run the Fiji/ImageJ microglia particle-analysis SOP over one or more .oir files.",
     )
     parser.add_argument(
         "inputs",
