@@ -1,0 +1,51 @@
+name: Bug report
+description: Report a reproducible problem
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      description: Exact command you ran
+      placeholder: microglia-particle-analysis ...
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 15, Ubuntu 24.04, Windows 11
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: python --version
+    validations:
+      required: true
+  - type: input
+    id: fiji-version
+    attributes:
+      label: Fiji version
+      placeholder: fiji --headless --version
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output or traceback
+      render: text
+  - type: textarea
+    id: image-review
+    attributes:
+      label: Output image review
+      description: Did results.csv, binary_mask.tif, or outlines.tif look wrong?
